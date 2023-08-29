@@ -24,7 +24,7 @@ import (
 var c = context.TODO()
 
 func init_db() (collection *mongo.Collection) {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27019/")
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017/")
 	client, err := mongo.Connect(c, clientOptions)
 	if err != nil {
 		log.Fatal(err)
