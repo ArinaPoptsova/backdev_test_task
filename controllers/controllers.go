@@ -15,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -24,7 +25,12 @@ import (
 var c = context.TODO()
 
 func init_db() (collection *mongo.Collection) {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27019/")
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+	clientOptions := options.Client().ApplyURI(os.Getenv("MONGODB"))
 	client, err := mongo.Connect(c, clientOptions)
 	if err != nil {
 		log.Fatal(err)
@@ -84,13 +90,8 @@ func CreateToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var user_id uuid.UUID = uuid.MustParse(c.Param("user_id"))
 		token, _ := NewToken(user_id)
-		// if err != nil {
-		// 	c.JSON(
-		// 		http.StatusInternalServerError,
-		// 		gin.H{"error": err})
-		// }
+		fmt.Println(SECRET_KEY)
 		c.JSON(http.StatusOK, token)
-		// return NewToken(user_id)
 	}
 }
 
